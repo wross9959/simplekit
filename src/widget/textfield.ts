@@ -9,15 +9,15 @@ export type SKTextfieldProps = SKElementProps & {
 };
 
 export class SKTextfield extends SKElement {
-  constructor({ text = "", ...elementProps }: SKTextfieldProps = {}) {
+  constructor({ text = "", fill = "white", ...elementProps }: SKTextfieldProps = {}) {
     super(elementProps);
     this.padding = Style.textPadding;
     this.text = text;
+    this.fill = fill;
   }
 
   state: "idle" | "hover" = "idle";
   focus = false;
-  font = Style.font;
 
   protected _text = "";
   get text() {
@@ -26,6 +26,36 @@ export class SKTextfield extends SKElement {
   set text(t: string) {
     this._text = t;
     this.setMinimalSize(this.width, this.height);
+  }
+
+  protected _radius = 0;
+  set radius(r: number) {
+    this._radius = r;
+  }
+  get radius() {
+    return this._radius;
+  }
+
+  protected _font = Style.font;
+  set font(s: string) {
+    this._font = s;
+    this.setMinimalSize(this.width, this.height);
+  }
+  get font() {
+    return this._font;
+  }
+
+  protected _fontColour = Style.fontColour;
+  set fontColour(c: string) {
+    this._fontColour = c;
+  }
+  get fontColour() {
+    return this._fontColour;
+  }
+
+  protected _highlightColour = Style.highlightColour;
+  set highlightColour(hc: string){
+    this._highlightColour = hc;
   }
 
   setMinimalSize(width?: number, height?: number) {
@@ -116,16 +146,16 @@ export class SKTextfield extends SKElement {
     // thick highlight rect
     if (this.state == "hover") {
       gc.beginPath();
-      gc.rect(0, 0, w, h);
-      gc.strokeStyle = Style.highlightColour;
+      gc.roundRect(0, 0, w, h, this._radius);
+      gc.strokeStyle = this._highlightColour;
       gc.lineWidth = 8;
       gc.stroke();
     }
 
     // border
     gc.beginPath();
-    gc.rect(0, 0, w, h);
-    gc.fillStyle = "white";
+    gc.roundRect(0, 0, w, h, this._radius);
+    gc.fillStyle = this.fill;
     gc.fill();
     gc.lineWidth = 1;
     gc.strokeStyle = this.focus ? "mediumblue" : "black";
@@ -135,8 +165,8 @@ export class SKTextfield extends SKElement {
     gc.clip();
 
     // text
-    gc.font = Style.font;
-    gc.fillStyle = "black";
+    gc.font = this._font;
+    gc.fillStyle = this._fontColour;
     gc.textBaseline = "middle";
     gc.textAlign = "left";
     gc.fillText(this.text, this.padding, h / 2);
@@ -149,7 +179,7 @@ export class SKTextfield extends SKElement {
       gc.moveTo(cursorX, Style.textPadding / 2);
       gc.lineTo(cursorX, cursorHeight);
       gc.lineWidth = 1;
-      gc.strokeStyle = "black";
+      gc.strokeStyle = this._font;
       gc.stroke();
     }
 

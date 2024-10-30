@@ -158,7 +158,8 @@ export class SKTextfield extends SKElement {
     gc.fillStyle = this.fill;
     gc.fill();
     gc.lineWidth = 1;
-    gc.strokeStyle = this.focus ? "mediumblue" : "black";
+    // changed this to fill color i didnt like the black always there
+    gc.strokeStyle = this.focus ? "mediumblue" : this.fill;
     gc.stroke();
     // clip text if it's wider than text area
     // TODO: could scroll text if it's wider than text area
